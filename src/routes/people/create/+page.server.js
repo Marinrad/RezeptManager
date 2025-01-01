@@ -3,13 +3,17 @@ import db from "$lib/db.js";
 export const actions = {
   create: async ({ request }) => {
     const data = await request.formData();
-    let person = {
-      name: data.get("name"),  // Person's name
-      age: data.get("age"),    // Person's age
-      occupation: data.get("occupation"),  // Person's occupation
-      status: data.get("status") === 'active',  // Person's status (active or inactive)
+    let recipe = {
+      name: data.get("name"),
+      duration: parseInt(data.get("duration")),
+      difficulty: data.get("difficulty"),
+      description: data.get("description"),
+      servings: parseInt(data.get("servings")),
+      instructions: data.get("instructions").split('\n').filter(i => i.trim()),
+      ingredients: JSON.parse(data.get("ingredients"))
     };
-    await db.createPerson(person);  // Calling the createPerson function in the db module
+    
+    await db.createRecipe(recipe);
     return { success: true };
   },
 };

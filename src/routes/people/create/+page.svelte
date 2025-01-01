@@ -2,32 +2,53 @@
   let { form } = $props();
 </script>
 
-<a href="/people">Back</a>  <!-- Link back to the list of people -->
-<h1>Add a Person</h1>  <!-- Heading changed to "Add a Person" -->
+<a href="/recipes">Back</a>
+<h1>Neues Rezept erstellen</h1>
 
 <form method="POST" action="?/create">
   <div class="mb-3">
     <label for="" class="form-label">Name</label>
-    <input name="name" class="form-control" type="text" />
+    <input name="name" class="form-control" type="text" required />
   </div>
+  
   <div class="mb-3">
-    <label for="" class="form-label">Age</label>
-    <input name="age" class="form-control" type="number" />
+    <label for="" class="form-label">Zubereitungszeit (Minuten)</label>
+    <input name="duration" class="form-control" type="number" required />
   </div>
+  
   <div class="mb-3">
-    <label for="" class="form-label">Occupation</label>
-    <input name="occupation" class="form-control" type="text" />
-  </div>
-  <div class="mb-3">
-    <label for="" class="form-label">Status</label>
-    <select name="status" class="form-control">
-      <option value="active">Active</option>
-      <option value="inactive">Inactive</option>
+    <label for="" class="form-label">Schwierigkeit</label>
+    <select name="difficulty" class="form-control" required>
+      <option value="Easy">Einfach</option>
+      <option value="Medium">Mittel</option>
+      <option value="Hard">Schwer</option>  
     </select>
   </div>
-  <button type="submit" class="btn btn-primary">Add Person</button>  <!-- Button text updated to "Add Person" -->
+
+  <div class="mb-3">
+    <label for="" class="form-label">Beschreibung</label>
+    <textarea name="description" class="form-control" rows="3" required></textarea>
+  </div>
+
+  <div class="mb-3">
+    <label for="" class="form-label">Portionen</label>
+    <input name="servings" class="form-control" type="number" required />
+  </div>
+
+  <div class="mb-3">
+    <label for="" class="form-label">Zubereitung (eine Anweisung pro Zeile)</label>
+    <textarea name="instructions" class="form-control" rows="5" required></textarea>
+  </div>
+
+  <div class="mb-3">
+    <label for="" class="form-label">Zutaten (JSON Format)</label>
+    <textarea name="ingredients" class="form-control" rows="5" required 
+      placeholder='[{"ingredient_id": "flour_id", "amount": 250, "unit": "g"}]'></textarea>
+  </div>
+
+  <button type="submit" class="btn btn-primary">Rezept erstellen</button>
 </form>
 
 {#if form?.success}
-  <p>Person created</p>  <!-- Success message updated to "Person created" -->
+  <p>Rezept wurde erstellt!</p>
 {/if}

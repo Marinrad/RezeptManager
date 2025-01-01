@@ -3,12 +3,9 @@
   let { children } = $props();
 </script>
 
-<nav
-  class="navbar navbar-expand-lg bg-body-tertiary bg-dark"
-  data-bs-theme="dark"
->
+<nav class="navbar navbar-expand-lg">
   <div class="container-fluid">
-    <a class="navbar-brand" href="/">PeopleStack</a>
+    <a class="navbar-brand" href="/">🍽️ Rezeptmanager</a>
     <button
       class="navbar-toggler"
       type="button"
@@ -23,15 +20,16 @@
     <div class="collapse navbar-collapse" id="navbarNav">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link active" aria-current="page" href="/people"
-            >People</a
-          >
+          <a class="nav-link" href="/recipes">📖 Rezepte</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="/ingredients">🥕 Zutaten</a>
         </li>
       </ul>
     </div>
   </div>
 </nav>
 
-<div class="container mt-3">
+<div class="container mt-4">
   {@render children()}
 </div>

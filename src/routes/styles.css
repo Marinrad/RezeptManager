@@ -1,4 +1,92 @@
 body {
-    background-color: black;
-    color: white;
-}
+    background-color: #1a202c;
+    color: #e2e8f0;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+ }
+ 
+ .container {
+    max-width: 1000px;
+    margin: 2rem auto;
+    padding: 2rem;
+    background-color: #2d3748;
+    border-radius: 15px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+ }
+ 
+ h1 {
+    color: #ed8936;
+    font-size: 2.8rem;
+    font-weight: bold;
+    text-align: center;
+    margin-bottom: 1.5rem;
+ }
+ 
+ .features {
+    background-color: #2a4365;
+    padding: 2rem;
+    border-radius: 10px;
+    margin: 2rem 0;
+ }
+ 
+ .features h2 {
+    color: #fbd38d;
+    font-size: 1.8rem;
+    margin-bottom: 1.5rem;
+ }
+ 
+ .features ul {
+    list-style: none;
+    padding: 0;
+ }
+ 
+ .features li {
+    margin: 1rem 0;
+    padding-left: 2rem;
+    position: relative;
+    font-size: 1.2rem;
+    color: #a0aec0;
+ }
+ 
+ .features li::before {
+    content: "🍳";
+    position: absolute;
+    left: 0;
+ }
+ 
+ .cta {
+    font-size: 1.5rem;
+    color: #f6ad55;
+    font-weight: bold;
+    text-align: center;
+    margin-top: 2.5rem;
+    padding: 1rem;
+    background-color: #2a4365;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s;
+ }
+ 
+ .cta:hover {
+    transform: scale(1.02);
+ }
+ 
+ .navbar {
+    background-color: #2d3748 !important;
+    padding: 1rem;
+ }
+ 
+ .navbar-brand {
+    color: #ed8936 !important;
+    font-size: 1.5rem;
+    font-weight: bold;
+ }
+ 
+ .nav-link {
+    color: #a0aec0 !important;
+    font-size: 1.1rem;
+    margin: 0 1rem;
+ }
+ 
+ .nav-link:hover {
+    color: #f6ad55 !important;
+ }

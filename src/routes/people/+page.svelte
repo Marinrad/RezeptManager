@@ -1,6 +1,6 @@
 <script>
   let { data } = $props();
-  import PersonCard from "$lib/components/PersonCard.svelte";  // Importing PersonCard component
+  import PersonCard from "$lib/components/RecipeCard.svelte";  // Importing PersonCard component
 </script>
 
 <p><i>Random person data</i></p>
