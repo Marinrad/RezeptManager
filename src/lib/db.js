@@ -1,147 +1,170 @@
-import { MongoClient, ObjectId } from "mongodb"; // See https://www.mongodb.com/docs/drivers/node/current/quick-start/
+// Database connection setup
+import { MongoClient, ObjectId } from "mongodb";
 import { DB_URI } from "$env/static/private";
 
 const client = new MongoClient(DB_URI);
-
 await client.connect();
-const db = client.db("PersonDB"); // select database
+const db = client.db("RecipeDB");
+
+// Custom error class for database operations
+class DatabaseError extends Error {
+ constructor(message, operation) {
+   super(message);
+   this.name = 'DatabaseError';
+   this.operation = operation;
+ }
+}
 
 //////////////////////////////////////////
-// People  --> Ingredients
+// Recipe Operations
 //////////////////////////////////////////
 
-// Get all people
-async function getPeople() {
-  let people = [];
-  try {
-    const collection = db.collection("people");
-
-    // You can specify a query/filter here
-    // See https://www.mongodb.com/docs/drivers/node/current/fundamentals/crud/query-document/
-    const query = {};
-
-    // Get all objects that match the query
-    people = await collection.find(query).toArray();
-    people.forEach((person) => {
-      person._id = person._id.toString(); // convert ObjectId to String
-    });
-  } catch (error) {
-    console.log(error);
-    // TODO: errorhandling
-  }
-  return people;
+// Retrieve all recipes from the database
+async function getRecipes() {
+ try {
+   const collection = db.collection("recipes");
+   const recipes = await collection.find({}).toArray();
+   // Convert MongoDB ObjectIds to strings for frontend compatibility
+   return recipes.map(recipe => ({
+     ...recipe,
+     _id: recipe._id.toString()
+   }));
+ } catch (error) {
+   throw new DatabaseError('Fehler beim Abrufen der Rezepte', 'getRecipes');
+ }
 }
 
-// Get person by id
-async function getPerson(id) {
-  let person = null;
-  try {
-    const collection = db.collection("people");
-    const query = { _id: new ObjectId(id) }; // filter by id
-    person = await collection.findOne(query);
+// Retrieve a single recipe by its ID
+async function getRecipe(id) {
+ try {
+   const collection = db.collection("recipes");
+   const recipe = await collection.findOne({ _id: new ObjectId(id) });
 
-    if (!person) {
-      console.log("No person with id " + id);
-      // TODO: errorhandling
-    } else {
-      person._id = person._id.toString(); // convert ObjectId to String
-    }
-  } catch (error) {
-    // TODO: errorhandling
-    console.log(error.message);
-  }
-  return person;
+   if (!recipe) {
+     throw new DatabaseError(`Rezept mit ID ${id} nicht gefunden`, 'getRecipe');
+   }
+   return { ...recipe, _id: recipe._id.toString() };
+ } catch (error) {
+   throw new DatabaseError('Fehler beim Abrufen des Rezepts', 'getRecipe');
+ }
 }
 
-// create person
-// Example person object:
+// Example recipe object structure for reference
 /* 
 { 
-  name: "John Doe",
-  age: 30,
-  occupation: "Engineer",
-  status: true 
+ name: "Spaghetti Carbonara",
+ duration: 30,
+ difficulty: "Easy",
+ description: "Classic Italian pasta dish",
+ instructions: ["Boil pasta", "Cook pancetta", "Mix eggs and cheese"],
+ servings: 4,
+ ingredients: [
+   { ingredient_id: "pancetta_id", amount: 150, unit: "g" },
+ ]
 } 
 */
-async function createPerson(person) {
-  person.profilePicture = "/images/profile.png"; // default profile picture
-  try {
-    const collection = db.collection("people");
-    const result = await collection.insertOne(person);
-    return result.insertedId.toString(); // convert ObjectId to String
-  } catch (error) {
-    // TODO: errorhandling
-    console.log(error.message);
-  }
-  return null;
+
+// Create a new recipe in the database
+async function createRecipe(recipe) {
+ if (!recipe.name) {
+   throw new DatabaseError('Name ist erforderlich', 'createRecipe');
+ }
+
+ // Set default image if none provided
+ recipe.image = recipe.image || "/images/recipe-default.png";
+ 
+ try {
+   const collection = db.collection("recipes");
+   const result = await collection.insertOne(recipe);
+   return result.insertedId.toString();
+ } catch (error) {
+   throw new DatabaseError('Fehler beim Erstellen des Rezepts', 'createRecipe');
+ }
 }
 
-// update person
-// Example person object:
-/* 
-{ 
-  _id: "6630e72c95e12055f661ff13",
-  name: "John Doe",
-  age: 30,
-  occupation: "Engineer",
-  status: true,
-  profilePicture: "/images/johndoe.png"
-} 
-*/
-// returns: id of the updated person or null, if person could not be updated
-async function updatePerson(person) {
-  try {
-    let id = person._id;
-    delete person._id; // delete the _id from the object, because the _id cannot be updated
-    const collection = db.collection("people");
-    const query = { _id: new ObjectId(id) }; // filter by id
-    const result = await collection.updateOne(query, { $set: person });
+// Update an existing recipe
+async function updateRecipe(recipe) {
+ if (!recipe._id) {
+   throw new DatabaseError('ID ist erforderlich', 'updateRecipe');
+ }
 
-    if (result.matchedCount === 0) {
-      console.log("No person with id " + id);
-      // TODO: errorhandling
-    } else {
-      console.log("Person with id " + id + " has been updated.");
-      return id;
-    }
-  } catch (error) {
-    // TODO: errorhandling
-    console.log(error.message);
-  }
-  return null;
+ try {
+   // Remove _id from update data as MongoDB doesn't allow _id updates
+   const { _id, ...updateData } = recipe;
+   const collection = db.collection("recipes");
+   const result = await collection.updateOne(
+     { _id: new ObjectId(_id) },
+     { $set: updateData }
+   );
+
+   if (result.matchedCount === 0) {
+     throw new DatabaseError(`Rezept mit ID ${_id} nicht gefunden`, 'updateRecipe');
+   }
+   return _id;
+ } catch (error) {
+   throw new DatabaseError('Fehler beim Aktualisieren des Rezepts', 'updateRecipe');
+ }
 }
 
-// delete person by id
-// returns: id of the deleted person or null, if person could not be deleted
-async function deletePerson(id) {
-  try {
-    const collection = db.collection("people");
-    const query = { _id: new ObjectId(id) }; // filter by id
-    const result = await collection.deleteOne(query);
+// Delete a recipe by its ID
+async function deleteRecipe(id) {
+ if (!id) {
+   throw new DatabaseError('ID ist erforderlich', 'deleteRecipe');
+ }
 
-    if (result.deletedCount === 0) {
-      console.log("No person with id " + id);
-    } else {
-      console.log("Person with id " + id + " has been successfully deleted.");
-      return id;
-    }
-  } catch (error) {
-    // TODO: errorhandling
-    console.log(error.message);
-  }
-  return null;
+ try {
+   const collection = db.collection("recipes");
+   const result = await collection.deleteOne({ _id: new ObjectId(id) });
+
+   if (result.deletedCount === 0) {
+     throw new DatabaseError(`Rezept mit ID ${id} nicht gefunden`, 'deleteRecipe');
+   }
+   return id;
+ } catch (error) {
+   throw new DatabaseError('Fehler beim Löschen des Rezepts', 'deleteRecipe');
+ }
 }
 
-// export all functions so that they can be used in other files
+//////////////////////////////////////////
+// Ingredient Operations
+//////////////////////////////////////////
+
+// Retrieve all ingredients from the database
+async function getIngredients() {
+ try {
+   const collection = db.collection("ingredients");
+   const ingredients = await collection.find({}).toArray();
+   return ingredients.map(ingredient => ({
+     ...ingredient,
+     _id: ingredient._id.toString()
+   }));
+ } catch (error) {
+   throw new DatabaseError('Fehler beim Abrufen der Zutaten', 'getIngredients');
+ }
+}
+
+// Retrieve a single ingredient by its ID
+async function getIngredient(id) {
+ try {
+   const collection = db.collection("ingredients");
+   const ingredient = await collection.findOne({ _id: new ObjectId(id) });
+
+   if (!ingredient) {
+     throw new DatabaseError(`Zutat mit ID ${id} nicht gefunden`, 'getIngredient');
+   }
+   return { ...ingredient, _id: ingredient._id.toString() };
+ } catch (error) {
+   throw new DatabaseError('Fehler beim Abrufen der Zutat', 'getIngredient');
+ }
+}
+
+// Export all database operations
 export default {
-  getPeople,
-  getPerson,
-  createPerson,
-  updatePerson,
-  deletePerson,
+ getRecipes,
+ getRecipe,
+ createRecipe,
+ updateRecipe,
+ deleteRecipe,
+ getIngredients,
+ getIngredient
 };
-
-
-//////////////////////////////////////////
-//Recipes
-//////////////////////////////////////////
