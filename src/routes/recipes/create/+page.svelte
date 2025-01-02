@@ -43,7 +43,7 @@
   <div class="mb-3">
     <label for="" class="form-label">Zutaten (JSON Format)</label>
     <textarea name="ingredients" class="form-control" rows="5" required 
-      placeholder='[{"ingredient_id": "flour_id", "amount": 250, "unit": "g"}]'></textarea>
+      placeholder='[{"ingredient_id", "flour_id", "amount", "unit"}]'></textarea>
   </div>
 
   <button type="submit" class="btn btn-primary">Rezept erstellen</button>
