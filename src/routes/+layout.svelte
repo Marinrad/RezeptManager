@@ -1,9 +1,10 @@
 <script>
   import "./styles.css";
   let { children } = $props();
-</script>
-
-<nav class="navbar navbar-expand-lg">
+  let searchTerm = '';
+ </script>
+ 
+ <nav class="navbar navbar-expand-lg">
   <div class="container-fluid">
     <a class="navbar-brand" href="/">🍽️ Rezeptmanager</a>
     <button
@@ -18,7 +19,7 @@
       <span class="navbar-toggler-icon"></span>
     </button>
     <div class="collapse navbar-collapse" id="navbarNav">
-      <ul class="navbar-nav">
+      <ul class="navbar-nav me-auto">
         <li class="nav-item">
           <a class="nav-link" href="/recipes">📖 Rezepte</a>
         </li>
@@ -28,8 +29,8 @@
       </ul>
     </div>
   </div>
-</nav>
-
-<div class="container mt-4">
+ </nav>
+ 
+ <div class="container mt-4">
   {@render children()}
-</div>
+ </div>
