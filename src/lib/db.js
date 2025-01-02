@@ -131,40 +131,113 @@ async function deleteRecipe(id) {
 
 // Retrieve all ingredients from the database
 async function getIngredients() {
- try {
-   const collection = db.collection("ingredients");
-   const ingredients = await collection.find({}).toArray();
-   return ingredients.map(ingredient => ({
-     ...ingredient,
-     _id: ingredient._id.toString()
-   }));
- } catch (error) {
-   throw new DatabaseError('Fehler beim Abrufen der Zutaten', 'getIngredients');
- }
+  try {
+    const collection = db.collection("ingredients");
+    const ingredients = await collection.find({}).toArray();
+    return ingredients.map(ingredient => ({
+      ...ingredient,
+      _id: ingredient._id.toString(),
+    }));
+  } catch (error) {
+    throw new DatabaseError("Fehler beim Abrufen der Zutaten", "getIngredients");
+  }
 }
 
 // Retrieve a single ingredient by its ID
 async function getIngredient(id) {
- try {
-   const collection = db.collection("ingredients");
-   const ingredient = await collection.findOne({ _id: new ObjectId(id) });
+  try {
+    const collection = db.collection("ingredients");
+    const ingredient = await collection.findOne({ _id: new ObjectId(id) });
 
-   if (!ingredient) {
-     throw new DatabaseError(`Zutat mit ID ${id} nicht gefunden`, 'getIngredient');
-   }
-   return { ...ingredient, _id: ingredient._id.toString() };
- } catch (error) {
-   throw new DatabaseError('Fehler beim Abrufen der Zutat', 'getIngredient');
- }
+    if (!ingredient) {
+      throw new DatabaseError(`Zutat mit ID ${id} nicht gefunden`, "getIngredient");
+    }
+    return { ...ingredient, _id: ingredient._id.toString() };
+  } catch (error) {
+    throw new DatabaseError("Fehler beim Abrufen der Zutat", "getIngredient");
+  }
 }
 
+// Create a new ingredient in the database
+async function createIngredient(ingredient) {
+  if (!ingredient.name) {
+    throw new DatabaseError("Name ist erforderlich", "createIngredient");
+  }
+  if (!ingredient.category) {
+    throw new DatabaseError("Kategorie ist erforderlich", "createIngredient");
+  }
+  if (!ingredient.unit) {
+    throw new DatabaseError("Einheit ist erforderlich", "createIngredient");
+  }
+  if (ingredient.calories_per_100g == null) {
+    throw new DatabaseError("Kalorien pro 100g sind erforderlich", "createIngredient");
+  }
+
+  try {
+    const collection = db.collection("ingredients");
+    const result = await collection.insertOne(ingredient);
+    return result.insertedId.toString();
+  } catch (error) {
+    throw new DatabaseError("Fehler beim Erstellen der Zutat", "createIngredient");
+  }
+}
+
+// Update an existing ingredient
+async function updateIngredient(ingredient) {
+  if (!ingredient._id) {
+    throw new DatabaseError("ID ist erforderlich", "updateIngredient");
+  }
+
+  try {
+    // Remove _id from update data as MongoDB doesn't allow _id updates
+    const { _id, ...updateData } = ingredient;
+    const collection = db.collection("ingredients");
+    const result = await collection.updateOne(
+      { _id: new ObjectId(_id) },
+      { $set: updateData }
+    );
+
+    if (result.matchedCount === 0) {
+      throw new DatabaseError(`Zutat mit ID ${_id} nicht gefunden`, "updateIngredient");
+    }
+    return _id;
+  } catch (error) {
+    throw new DatabaseError("Fehler beim Aktualisieren der Zutat", "updateIngredient");
+  }
+}
+
+// Delete an ingredient by its ID
+async function deleteIngredient(id) {
+  if (!id) {
+    throw new DatabaseError("ID ist erforderlich", "deleteIngredient");
+  }
+
+  try {
+    const collection = db.collection("ingredients");
+    const result = await collection.deleteOne({ _id: new ObjectId(id) });
+
+    if (result.deletedCount === 0) {
+      throw new DatabaseError(`Zutat mit ID ${id} nicht gefunden`, "deleteIngredient");
+    }
+    return id;
+  } catch (error) {
+    throw new DatabaseError("Fehler beim Löschen der Zutat", "deleteIngredient");
+  }
+}
+
+//////////////////////////////////////////
 // Export all database operations
+//////////////////////////////////////////
+
 export default {
- getRecipes,
- getRecipe,
- createRecipe,
- updateRecipe,
- deleteRecipe,
- getIngredients,
- getIngredient
+  getRecipes,
+  getRecipe,
+  createRecipe,
+  updateRecipe,
+  deleteRecipe,
+  getIngredients,
+  getIngredient,
+  createIngredient,
+  updateIngredient, // Neu hinzugefügt
+  deleteIngredient, // Neu hinzugefügt
 };
