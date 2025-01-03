@@ -3,12 +3,18 @@
   import RecipeCard from "$lib/components/RecipeCard.svelte";
   
   let searchTerm = $state('');
+  let displayedRecipes = $state(data.recipes);
+  
   $effect(() => {
-    // Effect für zukünftige Suchfunktionalität
+    displayedRecipes = searchTerm 
+      ? data.recipes.filter(recipe => 
+          recipe.name.toLowerCase().includes(searchTerm.toLowerCase())
+        )
+      : data.recipes;
   });
- </script>
- 
- <div class="recipes-header">
+</script>
+
+<div class="recipes-header">
   <h1>Rezeptsammlung</h1>
   <div class="search-container">
     <input 
@@ -18,21 +24,21 @@
       class="search-input"
     />
   </div>
- </div>
- 
- <div class="action-bar">
+</div>
+
+<div class="action-bar">
   <a href="/recipes/create" class="add-recipe-btn">
     <span class="icon">➕</span> Neues Rezept
   </a>
- </div>
- 
- <div class="row mt-4 g-4">
-  {#each data.recipes as recipe}
+</div>
+
+<div class="row mt-4 g-4">
+  {#each displayedRecipes as recipe}
     <div class="col-12 col-sm-6 col-md-4 col-lg-3 d-flex">
       <RecipeCard {recipe} class="flex-fill hover-effect" />
     </div>
   {/each}
- </div>
+</div>
  
  <style>
   .recipes-header {
@@ -109,14 +115,7 @@
   .icon {
     margin-right: 0.5rem;
   }
- 
-  .hover-effect {
-    transition: transform 0.2s ease;
-  }
- 
-  .hover-effect:hover {
-    transform: translateY(-5px);
-  }
+
  
   @media (max-width: 768px) {
     .recipes-header {

@@ -225,6 +225,36 @@ async function deleteIngredient(id) {
   }
 }
 
+async function searchRecipes(searchTerm) {
+  try {
+    const collection = db.collection("recipes");
+    const recipes = await collection.find({ 
+      name: { $regex: searchTerm, $options: 'i' }
+    }).toArray();
+    return recipes.map(recipe => ({
+      ...recipe,
+      _id: recipe._id.toString()
+    }));
+  } catch (error) {
+    throw new DatabaseError('Fehler bei der Rezeptsuche', 'searchRecipes');
+  }
+}
+
+async function searchIngredients(searchTerm) {
+  try {
+    const collection = db.collection("ingredients");
+    const ingredients = await collection.find({ 
+      name: { $regex: searchTerm, $options: 'i' }
+    }).toArray();
+    return ingredients.map(ingredient => ({
+      ...ingredient,
+      _id: ingredient._id.toString()
+    }));
+  } catch (error) {
+    throw new DatabaseError('Fehler bei der Zutatensuche', 'searchIngredients');
+  }
+}
+
 //////////////////////////////////////////
 // Export all database operations
 //////////////////////////////////////////
@@ -240,4 +270,6 @@ export default {
   createIngredient,
   updateIngredient, 
   deleteIngredient,
+  searchRecipes,
+  searchIngredients,
 };
