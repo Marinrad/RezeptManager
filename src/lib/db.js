@@ -238,6 +238,6 @@ export default {
   getIngredients,
   getIngredient,
   createIngredient,
-  updateIngredient, // Neu hinzugefügt
-  deleteIngredient, // Neu hinzugefügt
+  updateIngredient, 
+  deleteIngredient,
 };

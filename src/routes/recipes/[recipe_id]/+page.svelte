@@ -1,9 +1,18 @@
 <script>
   export let data;
   let recipe = data.recipe;
+  
+  import { page } from '$app/stores';
+  $: showSuccess = $page.url.searchParams.get('updated') === 'true';
 </script>
 
 <div class="recipe-detail-container">
+  {#if showSuccess}
+    <div class="success-message">
+      Änderungen wurden erfolgreich gespeichert!
+    </div>
+  {/if}
+
   <a href="/recipes" class="back-link">← Zurück</a>
 
   <h1>{recipe.name}</h1>
@@ -38,8 +47,12 @@
         </ol>
       </div>
 
-      <div class="recipe-actions">
-        <form method="POST" action="?/delete">
+      <div class="action-buttons">
+        <a href={`/recipes/${recipe._id}/edit`} class="btn btn-edit">
+          Rezept bearbeiten
+        </a>
+
+        <form method="POST" action="?/delete" class="delete-form">
           <input type="hidden" name="id" value={recipe._id}>
           <button class="btn btn-danger">Rezept löschen</button>
         </form>
@@ -49,6 +62,23 @@
 </div>
 
 <style>
+  .success-message {
+    background-color: #48bb78;
+    color: white;
+    padding: 1rem;
+    border-radius: 0.5rem;
+    margin: 1rem auto;
+    max-width: 1200px;
+    text-align: center;
+    animation: fadeOut 5s forwards;
+  }
+
+  @keyframes fadeOut {
+    0% { opacity: 1; }
+    70% { opacity: 1; }
+    100% { opacity: 0; }
+  }
+
   .recipe-detail-container {
     max-width: 1200px;
     margin: 2rem auto;
@@ -111,23 +141,64 @@
     margin-bottom: 2rem;
   }
 
+  .action-buttons {
+    display: flex;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding-top: 2rem;
+    border-top: 1px solid #4a5568;
+  }
+
+  .btn {
+    padding: 0.8rem 2rem;
+    border-radius: 0.375rem;
+    font-weight: 600;
+    text-decoration: none;
+    text-align: center;
+    transition: all 0.2s;
+  }
+
+  .btn-edit {
+    background-color: #4299e1;
+    color: white;
+    border: none;
+  }
+
+  .btn-edit:hover {
+    background-color: #3182ce;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(66, 153, 225, 0.4);
+  }
+
   .btn-danger {
     background-color: #ed8936;
-    border-color: #ed8936; 
-    padding: 0.8rem 2rem;
-    font-weight: 600;
+    border-color: #ed8936;
+    color: white;
+    border: none;
+    cursor: pointer;
   }
   
   .btn-danger:hover {
     background-color: #dd6b20;
-    border-color: #dd6b20;
     transform: translateY(-2px);
     box-shadow: 0 4px 12px rgba(237, 137, 54, 0.4);
+  }
+
+  .delete-form {
+    display: inline-block;
   }
 
   @media (max-width: 768px) {
     .recipe-detail-grid {
       grid-template-columns: 1fr;
+    }
+
+    .action-buttons {
+      flex-direction: column;
+    }
+
+    .btn {
+      width: 100%;
     }
   }
 </style>
