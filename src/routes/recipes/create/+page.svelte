@@ -65,6 +65,7 @@
 <div class="create-recipe-container">
   <a href="/recipes" class="back-link">← Zurück</a>
   
+  
   <div class="form-header">
     <h1>Neues Rezept erstellen</h1>
     <p class="subtitle">Ein neues kulinarisches Abenteuer beginnt</p>
@@ -231,10 +232,8 @@
     </div>
 
     <!-- Formular-Aktionen -->
-    <div class="form-actions">
-      <button type="submit" class="btn btn-primary btn-lg">
-        Rezept erstellen
-      </button>
+    <div class="form-actions">  
+      <button type="submit" class="btn btn-primary btn-lg">Rezept erstellen</button>
     </div>
   </form>
 

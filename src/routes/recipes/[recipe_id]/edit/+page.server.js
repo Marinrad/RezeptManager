@@ -15,10 +15,22 @@ const upload = multer({ storage });
 const uploadMiddleware = upload.single('image');
 
 export async function load({ params }) {
-    const recipe = await db.getRecipe(params.recipe_id);
-    return {
-        recipe
-    };
+    try {
+        // Hole das Rezept
+        const recipe = await db.getRecipe(params.recipe_id);
+        // Hole alle verfügbaren Zutaten für das Dropdown
+        const ingredients = await db.getIngredients();
+        
+        return {
+            recipe,
+            ingredients
+        };
+    } catch (error) {
+        console.error('Fehler beim Laden:', error);
+        return {
+            error: 'Fehler beim Laden des Rezepts.'
+        };
+    }
 }
 
 export const actions = {
@@ -34,6 +46,16 @@ export const actions = {
 
                 try {
                     const data = await request.formData();
+                    
+                    // Parse die Zutaten aus dem JSON-String
+                    let ingredients;
+                    try {
+                        ingredients = JSON.parse(data.get('ingredients'));
+                    } catch (e) {
+                        console.error('Fehler beim Parsen der Zutaten:', e);
+                        ingredients = [];
+                    }
+
                     const recipe = {
                         _id: params.recipe_id,
                         name: data.get('name'),
@@ -42,12 +64,7 @@ export const actions = {
                         description: data.get('description'),
                         servings: parseInt(data.get('servings'), 10),
                         instructions: data.get('instructions').split('\n').filter(step => step.trim() !== ''),
-                        ingredients: data.get('ingredients').split('\n')
-                            .filter(line => line.trim())
-                            .map(line => {
-                                const [ingredient_id, amount, unit] = line.trim().split(' ');
-                                return { ingredient_id, amount: parseInt(amount), unit };
-                            })
+                        ingredients: ingredients // Verwende die geparsten Zutaten
                     };
 
                     if (request.file) {

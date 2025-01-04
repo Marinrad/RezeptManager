@@ -58,17 +58,6 @@
               </select>
           </div>
       </div>
-      
-      <div class="form-section mt-4">
-          <h3>📸 Aktuelles Foto</h3>
-          {#if ingredient.image}
-              <img src={ingredient.image} alt={ingredient.name} class="current-image" />
-          {/if}
-          <div class="mb-3">
-              <label for="image" class="form-label">Neues Bild hochladen (optional)</label>
-              <input name="image" class="form-control" type="file" accept="image/png, image/jpeg" />
-          </div>
-      </div>
 
       <div class="form-actions">  
           <button type="submit" class="btn btn-primary btn-lg">Änderungen speichern</button>

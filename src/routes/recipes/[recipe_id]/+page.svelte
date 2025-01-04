@@ -1,7 +1,7 @@
 <script>
   export let data;
   let recipe = data.recipe;
-  
+
   import { page } from '$app/stores';
   $: showSuccess = $page.url.searchParams.get('updated') === 'true';
 </script>
@@ -33,7 +33,7 @@
         <h3>Zutaten:</h3>
         <ul>
           {#each recipe.ingredients as ingredient}
-            <li>{ingredient.amount} {ingredient.unit} {ingredient.ingredient_id}</li>
+            <li>{ingredient.amount} {ingredient.unit} {ingredient.name}</li>
           {/each}
         </ul>
       </div>
