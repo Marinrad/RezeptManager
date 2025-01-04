@@ -10,7 +10,7 @@
     <p class="subtitle">Erweitern Sie Ihr Zutatenlexikon</p>
   </div>
 
-  <form method="POST" action="/create" enctype="multipart/form-data" class="ingredient-form">
+  <form method="POST" enctype="multipart/form-data" class="ingredient-form">
     <div class="form-section">
       <div class="mb-4">
         <label for="name" class="form-label">Name</label>
@@ -21,12 +21,12 @@
         <label for="category" class="form-label">Kategorie</label>
         <select name="category" class="form-control" required>
           <option value="">Auswählen...</option>  
-          <option value="Pasta">Nudeln</option>
-          <option value="Dairy">Milchprodukte</option>
-          <option value="Meat">Fleisch</option>
-          <option value="Vegetables">Gemüse</option>
-          <option value="Fruits">Obst</option>
-          <option value="Others">Sonstiges</option>
+          <option value="Pasta">Pasta</option>
+          <option value="Dairy">Dairy</option>
+          <option value="Meat">Meat</option>
+          <option value="Vegetables">Vegetables</option>
+          <option value="Fruits">Fruits</option>
+          <option value="Others">Others</option>
         </select>
       </div>
 
@@ -41,10 +41,9 @@
           <option value="">Auswählen...</option>
           <option value="g">Gramm</option>  
           <option value="ml">Milliliter</option>
-          <option value="piece">Stück</option>
+          <option value="piece">Piece</option>
         </select>
       </div>
-
     </div>
     
     <div class="form-section mt-4">
@@ -60,8 +59,14 @@
     </div>
   </form>
 
+  {#if form?.error || form?.success === false}
+    <div class="alert alert-danger mt-4">
+      {form?.error || 'Ein Fehler ist aufgetreten'}
+    </div>
+  {/if}
+
   {#if form?.success}
-    <div class="alert alert-success mt-4">  
+    <div class="alert alert-success mt-4">
       Zutat wurde erfolgreich hinzugefügt!
     </div>
   {/if}

@@ -125,6 +125,21 @@ async function deleteRecipe(id) {
  }
 }
 
+async function searchRecipes(searchTerm) {
+  try {
+    const collection = db.collection("recipes");
+    const recipes = await collection.find({ 
+      name: { $regex: searchTerm, $options: 'i' }
+    }).toArray();
+    return recipes.map(recipe => ({
+      ...recipe,
+      _id: recipe._id.toString()
+    }));
+  } catch (error) {
+    throw new DatabaseError('Fehler bei der Rezeptsuche', 'searchRecipes');
+  }
+}
+
 //////////////////////////////////////////
 // Ingredient Operations
 //////////////////////////////////////////
@@ -225,21 +240,6 @@ async function deleteIngredient(id) {
   }
 }
 
-async function searchRecipes(searchTerm) {
-  try {
-    const collection = db.collection("recipes");
-    const recipes = await collection.find({ 
-      name: { $regex: searchTerm, $options: 'i' }
-    }).toArray();
-    return recipes.map(recipe => ({
-      ...recipe,
-      _id: recipe._id.toString()
-    }));
-  } catch (error) {
-    throw new DatabaseError('Fehler bei der Rezeptsuche', 'searchRecipes');
-  }
-}
-
 async function searchIngredients(searchTerm) {
   try {
     const collection = db.collection("ingredients");
@@ -265,11 +265,11 @@ export default {
   createRecipe,
   updateRecipe,
   deleteRecipe,
+  searchRecipes,
   getIngredients,
   getIngredient,
   createIngredient,
   updateIngredient, 
   deleteIngredient,
-  searchRecipes,
   searchIngredients,
 };

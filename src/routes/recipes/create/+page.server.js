@@ -1,5 +1,12 @@
 import db from "$lib/db.js";
 
+export async function load() {
+  const ingredients = await db.getIngredients();
+  return {
+    ingredients
+  };
+}
+
 export const actions = {
   create: async ({ request }) => {
     const data = await request.formData();
