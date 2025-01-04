@@ -49,20 +49,6 @@ async function getRecipe(id) {
  }
 }
 
-// Example recipe object structure for reference
-/* 
-{ 
- name: "Spaghetti Carbonara",
- duration: 30,
- difficulty: "Easy",
- description: "Classic Italian pasta dish",
- instructions: ["Boil pasta", "Cook pancetta", "Mix eggs and cheese"],
- servings: 4,
- ingredients: [
-   { ingredient_id: "pancetta_id", amount: 150, unit: "g" },
- ]
-} 
-*/
 
 // Create a new recipe in the database
 async function createRecipe(recipe) {
