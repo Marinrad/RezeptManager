@@ -95,10 +95,10 @@ h1 {
 /* Stile für IngredientCard */
 .ingredient-card {
    width: 300px;
-   height: 300px;
+   height: 240px;
    padding: 1rem;
    border-radius: 8px;
-   background: #1a202c;
+   background: #fff;
    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -151,19 +151,6 @@ a.recipe-link {
    margin-bottom: 1rem;
    color: #a0aec0;
    font-size: 0.9rem;
-}
-
-.recipe-card p {
-   color: #cbd5e0;
-   line-height: 1.5;
-}
-/* Zutatenüberschrift */
-.page-header {
-   background: linear-gradient(135deg, #1a202c 0%, #2d3748 100%);
-   padding: 2rem;
-   border-radius: 15px;
-   margin-bottom: 2rem;
-   box-shadow: 0 8px 16px rgba(0, 0, 0, 0.2);
 }
 
 .search-container {
@@ -822,4 +809,70 @@ ul {
      gap: 1rem;
    }
  }
- 
+
+.cta-link {
+   text-decoration: none;
+   color: inherit;
+   cursor: pointer;
+}
+
+.cta-link:hover {
+   opacity: 0.8;
+}
+.recipe-card {
+  width: 300px;
+  height: 400px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  border: 1px solid #ccc;
+  border-radius: 8px;
+  overflow: hidden;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  margin: 16px auto;
+}
+
+.image {
+  width: 100%;
+  height: 150px;
+  object-fit: cover;
+  border-bottom: 1px solid #ccc;
+}
+
+.recipe-link {
+  font-size: 1.2em;
+  font-weight: bold;
+  margin: 10px;
+  text-align: center;
+  color: #ff6200;
+  text-decoration: none;
+  display: block;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.recipe-link:hover {
+  text-decoration: underline;
+}
+
+.info {
+  display: flex;
+  justify-content: space-around;
+  margin: 10px 0;
+}
+
+.info span {
+  font-size: 0.9em;
+  color: #555;
+}
+
+p {
+  margin: 10px;
+  flex-grow: 1;
+  font-size: 0.9em;
+  color: #333;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}

@@ -1,20 +1,8 @@
 import { redirect } from '@sveltejs/kit';
-import multer from 'multer';
-import path from 'path';
 import db from '$lib/db';
 
-const storage = multer.diskStorage({
-    destination: './static/images/ingredients',
-    filename: (req, file, cb) => {
-        const ext = path.extname(file.originalname);
-        cb(null, `${file.fieldname}-${Date.now()}${ext}`);
-    }
-});
-
-const upload = multer({ storage });
-const uploadMiddleware = upload.single('image');
-
 export async function load({ params }) {
+    // Holt die Zutat basierend auf der ID aus den URL-Parametern
     const ingredient = await db.getIngredient(params.ingredient_id);
     return {
         ingredient
@@ -23,39 +11,51 @@ export async function load({ params }) {
 
 export const actions = {
     default: async ({ request, params }) => {
-        return new Promise((resolve) => {
-            uploadMiddleware(request, null, async (err) => {
-                if (err) {
-                    return resolve({
-                        success: false,
-                        message: 'Fehler beim Hochladen der Datei.'
-                    });
-                }
+        try {
+            const formData = await request.formData();
+            
+            // Validierung der Formulardaten
+            const name = formData.get('name')?.trim();
+            const category = formData.get('category')?.trim();
+            const calories = parseInt(formData.get('calories_per_100g'), 10);
+            const unit = formData.get('unit')?.trim();
 
-                try {
-                    const data = await request.formData();
-                    const ingredient = {
-                        _id: params.ingredient_id,
-                        name: data.get('name'),
-                        category: data.get('category'),
-                        calories_per_100g: parseInt(data.get('calories_per_100g'), 10),
-                        unit: data.get('unit')
-                    };
+            if (!name || !category || !unit || isNaN(calories)) {
+                return {
+                    success: false,
+                    error: 'Bitte füllen Sie alle Felder korrekt aus'
+                };
+            }
 
-                    if (request.file) {
-                        ingredient.image = `/static/images/ingredients/${request.file.filename}`;
-                    }
+            // Zutat-Objekt mit aktualisierten Werten erstellen
+            const ingredient = {
+                _id: params.ingredient_id,
+                name,
+                category,
+                calories_per_100g: calories,
+                unit
+            };
 
-                    await db.updateIngredient(ingredient);
-                    // Hier leiten wir zur Hauptübersicht zurück
-                    throw redirect(303, '/ingredients?updated=true');
-                } catch (error) {
-                    return resolve({
-                        success: false,
-                        message: 'Fehler beim Aktualisieren der Zutat.'
-                    });
-                }
-            });
-        });
+            // Zutat in der Datenbank aktualisieren
+            const result = await db.updateIngredient(ingredient);
+
+            // Weiterleitung, wenn das Update erfolgreich war
+            if (result) {
+                throw redirect(303, '/ingredients');
+            }
+            
+        } catch (error) {
+            // Wenn es ein Redirect ist, diesen durchlassen
+            if (error.status === 303) {
+                throw error;
+            }
+            
+            // Alle anderen Fehler als Datenbankfehler behandeln
+            console.error('Database error:', error);
+            return {
+                success: false,
+                error: 'Ein Fehler ist bei der Datenbankoperation aufgetreten'
+            };
+        }
     }
 };

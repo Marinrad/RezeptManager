@@ -1,12 +1,14 @@
-<!-- CreateRecipe.svelte -->
+<!-- Importiert die Daten (data) und Formularinformationen (form) -->
 <script>
-  export let data;
-  export let form;
-  
-  let selectedIngredientId = "";
-  let amount = "";
-  let ingredientsList = [];
- 
+  export let data; // Enthält Zutaten für die Auswahl
+  export let form; // Enthält Feedback (z. B. Fehler oder Erfolgsmeldungen)
+
+  // Lokale Zustandsvariablen
+  let selectedIngredientId = ""; // Aktuell ausgewählte Zutat
+  let amount = ""; // Menge der Zutat
+  let ingredientsList = []; // Liste der hinzugefügten Zutaten
+
+  // Funktion: Fügt eine Zutat mit Menge zur Liste hinzu
   function addIngredient() {
     if (selectedIngredientId && amount) {
       const selectedIngredient = data.ingredients.find(i => i._id === selectedIngredientId);
@@ -20,16 +22,19 @@
             unit: selectedIngredient.unit
           }
         ];
+        // Zurücksetzen der Eingabefelder
         selectedIngredientId = "";
         amount = "";
       }
     }
   }
- 
+
+  // Funktion: Entfernt eine Zutat aus der Liste
   function removeIngredient(index) {
     ingredientsList = ingredientsList.filter((_, i) => i !== index);
   }
- 
+
+  // Funktion: Bereitet die Zutatenliste für das Formular vor
   function handleSubmit(event) {
     const form = event.target;
     const ingredientsInput = form.querySelector('input[name="ingredients"]');
@@ -37,10 +42,11 @@
       ingredient_id: item.ingredient_id,
       amount: item.amount
     }));
-    ingredientsInput.value = JSON.stringify(dbIngredients);
+    ingredientsInput.value = JSON.stringify(dbIngredients); // Konvertiert Zutatenliste in JSON
   }
 </script>
 
+<!-- CSS-Styles für Formularfelder -->
 <style>
   .input-group-text,
   .form-control,
@@ -62,22 +68,25 @@
   }
 </style>
 
+<!-- Container für das Rezept-Erstellungsformular -->
 <div class="create-recipe-container">
+  <!-- Zurück-Button -->
   <a href="/recipes" class="back-link">← Zurück</a>
   
-  
+  <!-- Formular-Kopfbereich -->
   <div class="form-header">
     <h1>Neues Rezept erstellen</h1>
     <p class="subtitle">Ein neues kulinarisches Abenteuer beginnt</p>
   </div>
 
+  <!-- Rezept-Erstellungsformular -->
   <form method="POST" action="?/create" class="recipe-form" on:submit={handleSubmit}>
     <div class="form-grid">
-      <!-- Linke Spalte -->
+      <!-- Linke Spalte: Grundinformationen -->
       <div class="form-col">
         <div class="form-section">
           <h3>📝 Grundinformationen</h3>
-          
+
           <!-- Rezeptname -->
           <div class="mb-4">
             <label for="name" class="form-label">Rezeptname</label>
@@ -91,7 +100,7 @@
             />
           </div>
 
-          <!-- Metriken -->
+          <!-- Metriken: Zubereitungszeit, Schwierigkeit, Portionen -->
           <div class="recipe-metrics mb-4">
             <!-- Zubereitungszeit -->
             <div class="metric-input">
@@ -154,11 +163,11 @@
         </div>
       </div>
 
-      <!-- Rechte Spalte -->
+      <!-- Rechte Spalte: Zutaten und Zubereitung -->
       <div class="form-col">
         <div class="form-section">
           <h3>📋 Zutaten und Zubereitung</h3>
-          
+
           <!-- Zutaten -->
           <div class="mb-4">
             <label for="ingredient-select" class="form-label">Zutaten</label>

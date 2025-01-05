@@ -1,11 +1,13 @@
 <!-- EditRecipe.svelte -->
 <script>
-  let { data, form } = $props();
-  let recipe = data.recipe;
+  /** @type {import('./$types').PageData} */
+  export let data;
+  /** @type {import('./$types').ActionData} */
+  export let form;
   
+  let recipe = data.recipe;
   let selectedIngredientId = "";
   let amount = "";
-  // Initialisiere die Zutatenliste mit den vorhandenen Zutaten
   let ingredientsList = recipe.ingredients.map(ing => {
     const ingredientData = data.ingredients.find(i => i._id === ing.ingredient_id);
     return {
@@ -109,7 +111,7 @@
                   id="duration" 
                   name="duration" 
                   class="form-control" 
-                  type="number" 
+                  type="text" 
                   value={recipe.duration}
                   required 
                 />
@@ -140,7 +142,7 @@
                 id="servings" 
                 name="servings" 
                 class="form-control" 
-                type="number" 
+                type="text" 
                 value={recipe.servings}
                 required 
               />
