@@ -18,8 +18,17 @@ export const load = async ({ params }) => {
 
 export const actions = {
   delete: async ({ request }) => {
-    const formData = await request.formData();
-    await db.deleteRecipe(formData.get("id"));
-    throw redirect(303, "/recipes");
+    try {
+      const formData = await request.formData();
+      await db.deleteRecipe(formData.get("id"));
+      throw redirect(303, "/recipes");
+    } catch (error) {
+      console.error('Delete error:', error);
+      // Optional: Fehler an Client zurückgeben
+      return {
+        status: 500,
+        error: 'Failed to delete recipe'
+      };
+    }
   }
 };
