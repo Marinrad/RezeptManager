@@ -20,6 +20,6 @@ export const actions = {
   delete: async ({ request }) => {
     const formData = await request.formData();
     await db.deleteRecipe(formData.get("id"));
-    return { location: "/recipes" };
+    throw redirect(303, "/recipes");
   }
 };
