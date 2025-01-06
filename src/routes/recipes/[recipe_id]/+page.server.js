@@ -21,14 +21,15 @@ export const actions = {
     try {
       const formData = await request.formData();
       await db.deleteRecipe(formData.get("id"));
-      throw redirect(303, "/recipes");
+      return { success: true };
     } catch (error) {
       console.error('Delete error:', error);
-      // Optional: Fehler an Client zurückgeben
       return {
         status: 500,
         error: 'Failed to delete recipe'
       };
+    } finally {
+      throw redirect(303, "/recipes");
     }
   }
 };
