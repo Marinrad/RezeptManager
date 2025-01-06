@@ -1,7 +1,7 @@
-<!-- EditRecipe.svelte -->
 <script>
   export let data;
   export let form;
+  import { goto } from '$app/navigation';
   
   let recipe = data.recipe;
   let selectedIngredientId = "";
@@ -36,12 +36,25 @@
     ingredientsList = ingredientsList.filter((_, i) => i !== index);
   }
  
-  function handleSubmit(event) {
+  async function handleSubmit(event) {
+    event.preventDefault();
     const dbIngredients = ingredientsList.map(item => ({
       ingredient_id: item.ingredient_id,
       amount: item.amount
     }));
-    event.target.querySelector('input[name="ingredients"]').value = JSON.stringify(dbIngredients);
+    
+    const formEl = event.target;
+    formEl.querySelector('input[name="ingredients"]').value = JSON.stringify(dbIngredients);
+    
+    const formData = new FormData(formEl);
+    const response = await fetch(formEl.action, {
+      method: 'POST',
+      body: formData
+    });
+    
+    if (response.ok) {
+      goto('/recipes');
+    }
   }
 </script>
 

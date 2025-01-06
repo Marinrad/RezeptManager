@@ -46,11 +46,10 @@
       </div>
 
       <div class="action-buttons">
-        <form method="POST" action="?/edit" class="edit-form">
-          <input type="hidden" name="id" value={recipe._id}>
-          <button type="submit" class="btn btn-edit">Rezept bearbeiten</button>
-        </form>
-      
+        <a href={`/recipes/${recipe._id}/edit`} class="btn btn-edit" data-sveltekit-preload-data>
+          Rezept bearbeiten
+        </a>
+
         <form method="POST" action="?/delete" class="delete-form">
           <input type="hidden" name="id" value={recipe._id}>
           <button type="submit" class="btn btn-danger">Rezept löschen</button>

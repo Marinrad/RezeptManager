@@ -24,23 +24,10 @@ export const actions = {
       throw redirect(303, "/recipes");
     } catch (error) {
       console.error('Delete error:', error);
+      // Optional: Fehler an Client zurückgeben
       return {
         status: 500,
         error: 'Failed to delete recipe'
-      };
-    }
-  },
-  
-  edit: async ({ request }) => {
-    try {
-      const formData = await request.formData();
-      const id = formData.get("id");
-      throw redirect(303, `/recipes/${id}/edit`);
-    } catch (error) {
-      console.error('Edit error:', error);
-      return {
-        status: 500,
-        error: 'Failed to redirect to edit page'
       };
     }
   }
