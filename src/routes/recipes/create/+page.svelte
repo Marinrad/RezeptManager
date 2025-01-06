@@ -232,7 +232,10 @@
               name="instructions" 
               class="form-control" 
               rows="10" 
-              placeholder="1. Ofen auf 180°C vorheizen&#10;2. Alle trockenen Zutaten vermischen&#10;3. ..." 
+              placeholder=
+              "1. Ofen auf 180°C vorheizen&#10;
+2. Alle trockenen Zutaten vermischen&#10;
+3. ..." 
               required
             ></textarea>
           </div>

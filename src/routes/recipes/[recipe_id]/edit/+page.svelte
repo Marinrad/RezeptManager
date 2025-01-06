@@ -1,22 +1,17 @@
 <!-- EditRecipe.svelte -->
 <script>
-  /** @type {import('./$types').PageData} */
   export let data;
-  /** @type {import('./$types').ActionData} */
   export let form;
   
   let recipe = data.recipe;
   let selectedIngredientId = "";
   let amount = "";
-  let ingredientsList = recipe.ingredients.map(ing => {
-    const ingredientData = data.ingredients.find(i => i._id === ing.ingredient_id);
-    return {
-      ingredient_id: ing.ingredient_id,
-      name: ingredientData?.name,
-      amount: ing.amount,
-      unit: ingredientData?.unit
-    };
-  });
+  let ingredientsList = recipe.ingredients.map(ing => ({
+    ingredient_id: ing.ingredient_id,
+    name: data.ingredients.find(i => i._id === ing.ingredient_id)?.name,
+    amount: ing.amount,
+    unit: data.ingredients.find(i => i._id === ing.ingredient_id)?.unit
+  }));
  
   function addIngredient() {
     if (selectedIngredientId && amount) {
@@ -42,36 +37,13 @@
   }
  
   function handleSubmit(event) {
-    const form = event.target;
-    const ingredientsInput = form.querySelector('input[name="ingredients"]');
     const dbIngredients = ingredientsList.map(item => ({
       ingredient_id: item.ingredient_id,
       amount: item.amount
     }));
-    ingredientsInput.value = JSON.stringify(dbIngredients);
+    event.target.querySelector('input[name="ingredients"]').value = JSON.stringify(dbIngredients);
   }
 </script>
-
-<style>
-  .input-group-text,
-  .form-control,
-  .btn {
-    height: 38px !important;
-    line-height: 1.5 !important;
-    padding-top: 0.375rem !important;
-    padding-bottom: 0.375rem !important;
-  }
-
-  .input-group-text {
-    display: flex !important;
-    align-items: center !important;
-    justify-content: center !important;
-  }
-
-  textarea.form-control {
-    height: auto !important;
-  }
-</style>
 
 <div class="edit-recipe-container">
   <a href="/recipes" class="back-link">← Zurück</a>
@@ -83,14 +55,12 @@
 
   <form method="POST" action="?/update" class="recipe-form" on:submit={handleSubmit}>
     <div class="form-grid">
-      <!-- Linke Spalte -->
       <div class="form-col">
         <div class="form-section">
           <h3>📝 Grundinformationen</h3>
           
-          <!-- Rezeptname -->
           <div class="mb-4">
-            <label for="name" class="form-label">Rezeptname</label>
+            <label for="name">Rezeptname</label>
             <input 
               id="name" 
               name="name" 
@@ -101,11 +71,9 @@
             />
           </div>
 
-          <!-- Metriken -->
           <div class="recipe-metrics mb-4">
-            <!-- Zubereitungszeit -->
             <div class="metric-input">
-              <label for="duration" class="form-label">Zubereitungszeit</label>
+              <label for="duration">Zubereitungszeit</label>
               <div class="input-group">
                 <input 
                   id="duration" 
@@ -115,13 +83,12 @@
                   value={recipe.duration}
                   required 
                 />
-                <span class="input-group-text" style="width: 45px;">Min</span>
+                <span class="input-group-text">Min</span>
               </div>
             </div>
             
-            <!-- Schwierigkeit -->
             <div class="metric-input">
-              <label for="difficulty" class="form-label">Schwierigkeit</label>
+              <label for="difficulty">Schwierigkeit</label>
               <select 
                 id="difficulty" 
                 name="difficulty" 
@@ -135,9 +102,8 @@
               </select>
             </div>
 
-            <!-- Portionen -->
             <div class="metric-input">
-              <label for="servings" class="form-label">Portionen</label>
+              <label for="servings">Portionen</label>
               <input 
                 id="servings" 
                 name="servings" 
@@ -149,9 +115,8 @@
             </div>
           </div>
 
-          <!-- Beschreibung -->
           <div class="mb-4">
-            <label for="description" class="form-label">Beschreibung</label>
+            <label for="description">Beschreibung</label>
             <textarea 
               id="description" 
               name="description" 
@@ -163,14 +128,12 @@
         </div>
       </div>
 
-      <!-- Rechte Spalte -->
       <div class="form-col">
         <div class="form-section">
           <h3>📋 Zutaten und Zubereitung</h3>
           
-          <!-- Zutaten -->
           <div class="mb-4">
-            <label for="ingredient-select" class="form-label">Zutaten</label>
+            <label for="ingredient-select">Zutaten</label>
             <div class="input-group mb-2">
               <select 
                 id="ingredient-select"
@@ -179,9 +142,7 @@
               >
                 <option value="">Zutat auswählen...</option>
                 {#each data.ingredients as ingredient}
-                  <option value={ingredient._id}>
-                    {ingredient.name}
-                  </option>
+                  <option value={ingredient._id}>{ingredient.name}</option>
                 {/each}
               </select>
               
@@ -198,25 +159,18 @@
                 type="button" 
                 class="btn btn-secondary"
                 on:click={addIngredient}
-              >
-                +
-              </button>
+              >+</button>
             </div>
 
-            <!-- Zutatenliste -->
             <div class="ingredients-list">
               {#each ingredientsList as item, index}
                 <div class="ingredient-item">
-                  <span>
-                    {item.name} - {item.amount} {item.unit}
-                  </span>
+                  <span>{item.name} - {item.amount} {item.unit}</span>
                   <button 
                     type="button" 
                     class="btn btn-danger btn-sm"
                     on:click={() => removeIngredient(index)}
-                  >
-                    ×
-                  </button>
+                  >×</button>
                 </div>
               {/each}
             </div>
@@ -224,9 +178,8 @@
             <input type="hidden" name="ingredients" value="">
           </div>
 
-          <!-- Zubereitungsschritte -->
           <div class="mb-4">
-            <label for="instructions" class="form-label">Zubereitungsschritte</label>
+            <label for="instructions">Zubereitungsschritte</label>
             <textarea 
               id="instructions" 
               name="instructions" 
@@ -239,22 +192,16 @@
       </div>
     </div>
 
-    <!-- Formular-Aktionen -->
     <div class="form-actions">  
       <button type="submit" class="btn btn-primary btn-lg">Änderungen speichern</button>
     </div>
   </form>
 
-  <!-- Feedback-Meldungen -->
   {#if form?.error}
-    <div class="alert alert-danger mt-4">
-      {form.error}
-    </div>
+    <div class="alert alert-danger mt-4">{form.error}</div>
   {/if}
 
   {#if form?.success}
-    <div class="alert alert-success mt-4">
-      Rezept wurde erfolgreich aktualisiert!
-    </div>
+    <div class="alert alert-success mt-4">Rezept wurde erfolgreich aktualisiert!</div>
   {/if}
 </div>

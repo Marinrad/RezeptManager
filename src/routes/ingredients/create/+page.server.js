@@ -6,42 +6,36 @@ export const actions = {
         try {
             const formData = await request.formData();
             
-            // Validate form data
-            const name = formData.get('name')?.trim();
-            const category = formData.get('category')?.trim();
-            const calories = parseInt(formData.get('calories_per_100g'), 10);
-            const unit = formData.get('unit')?.trim();
+            const data = {
+                name: formData.get('name')?.trim(),
+                category: formData.get('category')?.trim(),
+                calories_per_100g: parseInt(formData.get('calories_per_100g'), 10),
+                unit: formData.get('unit')?.trim(),
+            };
 
-            if (!name || !category || !unit || isNaN(calories)) {
+            // Validierung
+            const validationErrors = validateIngredient(data);
+            if (validationErrors) {
                 return {
                     success: false,
-                    error: 'Bitte füllen Sie alle Felder korrekt aus'
+                    error: validationErrors
                 };
             }
 
             const ingredient = {
-                name,
-                category,
-                calories_per_100g: calories,
-                unit,
+                ...data,
                 image: '/images/ingredients/placeholder.png'
             };
 
-            // Speichern in der Datenbank
             const result = await db.createIngredient(ingredient);
             
-            // Wenn das Speichern erfolgreich war, redirect ausführen
             if (result) {
                 throw redirect(303, '/ingredients');
             }
             
         } catch (error) {
-            // Wenn es ein Redirect ist, diesen durchlassen
-            if (error.status === 303) {
-                throw error;
-            }
+            if (error.status === 303) throw error;
             
-            // Alle anderen Fehler als Datenbankfehler behandeln
             console.error('Database error:', error);
             return {
                 success: false,
@@ -50,3 +44,13 @@ export const actions = {
         }
     }
 };
+
+function validateIngredient(data) {
+    const { name, category, calories_per_100g, unit } = data;
+    
+    if (!name || !category || !unit || isNaN(calories_per_100g)) {
+        return 'Bitte füllen Sie alle Felder korrekt aus';
+    }
+    
+    return null;
+}

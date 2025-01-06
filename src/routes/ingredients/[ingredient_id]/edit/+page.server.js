@@ -2,7 +2,6 @@ import { redirect } from '@sveltejs/kit';
 import db from '$lib/db';
 
 export async function load({ params }) {
-    // Holt die Zutat basierend auf der ID aus den URL-Parametern
     const ingredient = await db.getIngredient(params.ingredient_id);
     return {
         ingredient
@@ -14,7 +13,6 @@ export const actions = {
         try {
             const formData = await request.formData();
             
-            // Validierung der Formulardaten
             const name = formData.get('name')?.trim();
             const category = formData.get('category')?.trim();
             const calories = parseInt(formData.get('calories_per_100g'), 10);
@@ -27,7 +25,6 @@ export const actions = {
                 };
             }
 
-            // Zutat-Objekt mit aktualisierten Werten erstellen
             const ingredient = {
                 _id: params.ingredient_id,
                 name,
@@ -36,21 +33,17 @@ export const actions = {
                 unit
             };
 
-            // Zutat in der Datenbank aktualisieren
             const result = await db.updateIngredient(ingredient);
 
-            // Weiterleitung, wenn das Update erfolgreich war
             if (result) {
                 throw redirect(303, '/ingredients');
             }
             
         } catch (error) {
-            // Wenn es ein Redirect ist, diesen durchlassen
             if (error.status === 303) {
                 throw error;
             }
             
-            // Alle anderen Fehler als Datenbankfehler behandeln
             console.error('Database error:', error);
             return {
                 success: false,

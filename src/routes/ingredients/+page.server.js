@@ -1,9 +1,17 @@
-// Importiert die Datenbankfunktionen
 import db from "$lib/db";
 
-// Holt Zutaten aus der Datenbank und gibt sie zurück
 export async function load() {
-  return {
-    ingredients: await db.getIngredients()
-  };
+  try {
+    const ingredients = await db.getIngredients();
+    return {
+      ingredients
+    };
+  } catch (error) {
+    console.error('Fehler beim Laden der Zutaten:', error);
+    // Optional: Error handling für die UI
+    return {
+      ingredients: [],
+      error: 'Zutaten konnten nicht geladen werden'
+    };
+  }
 }
