@@ -1,12 +1,11 @@
-<!-- Importiert die Daten (data) und Formularinformationen (form) -->
 <script>
-  export let data; // Enthält Zutaten für die Auswahl
-  export let form; // Enthält Feedback (z. B. Fehler oder Erfolgsmeldungen)
+  export let data;
+  export let form;
 
   // Lokale Zustandsvariablen
-  let selectedIngredientId = ""; // Aktuell ausgewählte Zutat
-  let amount = ""; // Menge der Zutat
-  let ingredientsList = []; // Liste der hinzugefügten Zutaten
+  let selectedIngredientId = ""; 
+  let amount = "";
+  let ingredientsList = [];
 
   // Funktion: Fügt eine Zutat mit Menge zur Liste hinzu
   function addIngredient() {
@@ -29,7 +28,6 @@
     }
   }
 
-  // Funktion: Entfernt eine Zutat aus der Liste
   function removeIngredient(index) {
     ingredientsList = ingredientsList.filter((_, i) => i !== index);
   }
@@ -68,12 +66,9 @@
   }
 </style>
 
-<!-- Container für das Rezept-Erstellungsformular -->
 <div class="create-recipe-container">
-  <!-- Zurück-Button -->
   <a href="/recipes" class="back-link">← Zurück</a>
   
-  <!-- Formular-Kopfbereich -->
   <div class="form-header">
     <h1>Neues Rezept erstellen</h1>
     <p class="subtitle">Ein neues kulinarisches Abenteuer beginnt</p>
@@ -82,12 +77,10 @@
   <!-- Rezept-Erstellungsformular -->
   <form method="POST" action="?/create" class="recipe-form" on:submit={handleSubmit}>
     <div class="form-grid">
-      <!-- Linke Spalte: Grundinformationen -->
       <div class="form-col">
         <div class="form-section">
           <h3>📝 Grundinformationen</h3>
 
-          <!-- Rezeptname -->
           <div class="mb-4">
             <label for="name" class="form-label">Rezeptname</label>
             <input 
@@ -100,9 +93,7 @@
             />
           </div>
 
-          <!-- Metriken: Zubereitungszeit, Schwierigkeit, Portionen -->
           <div class="recipe-metrics mb-4">
-            <!-- Zubereitungszeit -->
             <div class="metric-input">
               <label for="duration" class="form-label">Zubereitungszeit</label>
               <div class="input-group">
@@ -118,7 +109,6 @@
               </div>
             </div>
             
-            <!-- Schwierigkeit -->
             <div class="metric-input">
               <label for="difficulty" class="form-label">Schwierigkeit</label>
               <select 
@@ -134,7 +124,6 @@
               </select>
             </div>
 
-            <!-- Portionen -->
             <div class="metric-input">
               <label for="servings" class="form-label">Portionen</label>
               <input 
@@ -148,7 +137,6 @@
             </div>
           </div>
 
-          <!-- Beschreibung -->
           <div class="mb-4">
             <label for="description" class="form-label">Beschreibung</label>
             <textarea 
@@ -168,7 +156,6 @@
         <div class="form-section">
           <h3>📋 Zutaten und Zubereitung</h3>
 
-          <!-- Zutaten -->
           <div class="mb-4">
             <label for="ingredient-select" class="form-label">Zutaten</label>
             <div class="input-group mb-2">
@@ -233,9 +220,9 @@
               class="form-control" 
               rows="10" 
               placeholder=
-              "1. Ofen auf 180°C vorheizen&#10;
-2. Alle trockenen Zutaten vermischen&#10;
-3. ..." 
+              "Ofen auf 180°C vorheizen&#10;
+Alle trockenen Zutaten vermischen&#10;
+ ..." 
               required
             ></textarea>
           </div>
@@ -243,13 +230,11 @@
       </div>
     </div>
 
-    <!-- Formular-Aktionen -->
     <div class="form-actions">  
       <button type="submit" class="btn btn-primary btn-lg">Rezept erstellen</button>
     </div>
   </form>
 
-  <!-- Feedback-Meldungen -->
   {#if form?.error}
     <div class="alert alert-danger mt-4">
       {form.error}

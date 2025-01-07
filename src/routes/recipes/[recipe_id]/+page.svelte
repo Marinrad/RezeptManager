@@ -1,7 +1,10 @@
 <script>
   export let data;
   let recipe = data.recipe;
+
   import { page } from '$app/stores';
+
+  // Überprüfen, ob der `updated`-Parameter in der URL vorhanden ist, um eine Erfolgsmeldung anzuzeigen
   $: showSuccess = $page.url.searchParams.get('updated') === 'true';
 </script>
 
@@ -31,6 +34,7 @@
         <h3>Zutaten:</h3>
         <ul>
           {#each recipe.ingredients as ingredient}
+            <!-- Zutatenliste anzeigen -->
             <li>{ingredient.amount} {ingredient.unit} {ingredient.name}</li>
           {/each}
         </ul>
@@ -40,6 +44,7 @@
         <h3>Zubereitung:</h3>
         <ol>
           {#each recipe.instructions as step}
+            <!-- Zubereitungsschritte anzeigen -->
             <li>{step}</li>
           {/each}
         </ol>
@@ -50,7 +55,9 @@
           Rezept bearbeiten
         </a>
 
+        <!-- Formular zum Löschen des Rezepts -->
         <form method="POST" action="?/delete" class="delete-form">
+          <!-- Verstecktes Eingabefeld mit der ID des Rezepts -->
           <input type="hidden" name="id" value={recipe._id}>
           <button type="submit" class="btn btn-danger">Rezept löschen</button>
         </form>

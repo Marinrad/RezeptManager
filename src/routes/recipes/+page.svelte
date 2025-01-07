@@ -5,9 +5,10 @@
   let searchTerm = $state('');
   let displayedRecipes = $state(data.recipes);
 
+  // $effect --> 1x laden bei start und bei neuen eingaben
   $effect(() => {
     displayedRecipes = searchTerm
-      ? data.recipes.filter(recipe => 
+      ? data.recipes.filter(recipe => //  ? --> one liner if statement
           recipe.name.toLowerCase().includes(searchTerm.toLowerCase())
         )
       : data.recipes;

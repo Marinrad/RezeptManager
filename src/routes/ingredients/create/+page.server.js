@@ -6,6 +6,7 @@ export const actions = {
         try {
             const formData = await request.formData();
             
+            // Daten aus dem Formular extrahieren und trimmen
             const data = {
                 name: formData.get('name')?.trim(),
                 category: formData.get('category')?.trim(),
@@ -13,7 +14,7 @@ export const actions = {
                 unit: formData.get('unit')?.trim(),
             };
 
-            // Validierung
+            // Validierung der Formulardaten
             const validationErrors = validateIngredient(data);
             if (validationErrors) {
                 return {
@@ -27,6 +28,7 @@ export const actions = {
                 image: '/images/ingredients/placeholder.png'
             };
 
+            // Zutat in der Datenbank erstellen
             const result = await db.createIngredient(ingredient);
             
             if (result) {
@@ -48,6 +50,7 @@ export const actions = {
 function validateIngredient(data) {
     const { name, category, calories_per_100g, unit } = data;
     
+    // Überprüfen, ob alle Felder korrekt ausgefüllt sind
     if (!name || !category || !unit || isNaN(calories_per_100g)) {
         return 'Bitte füllen Sie alle Felder korrekt aus';
     }

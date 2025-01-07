@@ -11,6 +11,7 @@
         <p class="subtitle">Aktualisieren Sie die Informationen für {ingredient.name}</p>
     </div>
 
+    <!-- Formular zum Bearbeiten der Zutat -->
     <form method="POST" class="ingredient-form">
         <table class="ingredients-table">
             <thead>

@@ -25,6 +25,7 @@
         <p class="subtitle">Erweitern Sie Ihr Zutatenlexikon</p>
     </div>
 
+    <!-- Formular zum Hinzufügen einer neuen Zutat -->
     <form method="POST" class="ingredient-form">
         <table class="ingredients-table">
             <thead>
@@ -67,7 +68,7 @@
                         <select name="unit" class="form-control" required>
                             <option value="">Auswählen...</option>
                             {#each units as {value, label}}
-                                <option {value}>{label}</option>
+                                <option value={value}>{label}</option>
                             {/each}
                         </select>
                     </td>
@@ -75,12 +76,14 @@
             </tbody>
         </table>
 
+        <!-- Anzeige von Fehlermeldungen -->
         {#if form?.error}
             <div class="alert alert-danger" role="alert">
                 {form.error}
             </div>
         {/if}
 
+        <!-- Schaltfläche zum Absenden des Formulars -->
         <div class="form-actions">  
             <button type="submit" class="btn btn-primary">Zutat hinzufügen</button>
         </div>

@@ -6,6 +6,7 @@
   let recipe = data.recipe;
   let selectedIngredientId = "";
   let amount = "";
+  // Zutatenliste initialisieren
   let ingredientsList = recipe.ingredients.map(ing => ({
     ingredient_id: ing.ingredient_id,
     name: data.ingredients.find(i => i._id === ing.ingredient_id)?.name,
@@ -13,6 +14,7 @@
     unit: data.ingredients.find(i => i._id === ing.ingredient_id)?.unit
   }));
  
+  // Funktion zum Hinzufügen einer Zutat zur Zutatenliste
   function addIngredient() {
     if (selectedIngredientId && amount) {
       const selectedIngredient = data.ingredients.find(i => i._id === selectedIngredientId);
@@ -32,10 +34,12 @@
     }
   }
  
+  // Funktion zum Entfernen einer Zutat aus der Zutatenliste
   function removeIngredient(index) {
     ingredientsList = ingredientsList.filter((_, i) => i !== index);
   }
  
+  // Funktion zum Verarbeiten des Formulars
   async function handleSubmit(event) {
     event.preventDefault();
     const dbIngredients = ingredientsList.map(item => ({
